@@ -1,7 +1,7 @@
 {
     "name": "lolchatz",
 	"subdomain": "lolchatz",
-    "version": "0.1",
+    "version": "0.8.24",
     "description": "single room chat / socket sandbox",
 	"scripts": {
 		"start": "chat.js"

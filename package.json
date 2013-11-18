@@ -10,5 +10,5 @@
         "socket.io": "latest",
         "express": "latest"
     },
-    "author": "zemat	"
+    "author": "zemat"
 }

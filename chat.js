@@ -65,4 +65,4 @@ io.sockets.on('connection', function (socket) {
 	});
 });
 
-http.listen(1337);
+http.listen(8080);

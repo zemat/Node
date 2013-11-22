@@ -4,13 +4,13 @@ need: open socket
 */
 
 var http = require('http').createServer(function (req,resp){
-	console.log(http.address.port());											  
+	console.log("Started");											  
 });
 
 //1337
 //8080
 //80
-http.listen(8080,"127.0.0.1");
+http.listen(8080);
 
 var io = require('socket.io').listen(http);
 

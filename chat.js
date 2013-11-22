@@ -1,15 +1,7 @@
-/*
-User opens page no username so can't get messages
-need: open socket
-*/
-
 var http = require('http').createServer(function (req,resp){
 	console.log("Started");											  
 });
 
-//1337
-//8080
-//80
 http.listen(8080);
 
 var io = require('socket.io').listen(http);
@@ -48,6 +40,7 @@ io.sockets.on('connection', function (socket) {
 			else{
 				io.sockets.emit("userLogged",{msg: "That username is already taken"});
 			}
+			console.log("JSON SIZE: " + users.length);
 		}
 	});
 	

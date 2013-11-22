@@ -65,4 +65,8 @@ io.sockets.on('connection', function (socket) {
 	});
 });
 
-http.listen(80);
+
+//1337
+//8080
+//80
+http.listen(80,"127.0.0.1");

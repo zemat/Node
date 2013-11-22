@@ -48,6 +48,16 @@ io.sockets.on('connection', function (socket) {
 		io.sockets.emit('chatMsg',JSON.parse(data));
 	});
 	
+	socket.on('keyboardDown',function(data){
+		var j = JSON.parse(data);
+		io.sockets.emit('keyboardDown',{userName:j.userName,keyCode:j.keyCode});
+	});
+	
+	socket.on('keyboardUp',function(data){
+		var j = JSON.parse(data);
+		io.sockets.emit('keyboardUp',{userName:j.userName,keyCode:j.keyCode});
+	});
+	
 	socket.on('disconnect', function (data) {
 		var tmp = [ ];
 		for(var i = 0; i < users.length; i++){

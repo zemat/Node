@@ -69,4 +69,4 @@ io.sockets.on('connection', function (socket) {
 //1337
 //8080
 //80
-http.listen(80,"127.0.0.1");
+http.listen(8080,"127.0.0.1");

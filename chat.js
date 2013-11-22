@@ -4,7 +4,7 @@ need: open socket
 */
 
 var http = require('http').createServer(function (req,resp){
-	//console.log(http.address.port());											  
+	console.log(http.address.port());											  
 });
 
 var io = require('socket.io').listen(http);

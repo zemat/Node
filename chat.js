@@ -7,6 +7,11 @@ var http = require('http').createServer(function (req,resp){
 	console.log(http.address.port());											  
 });
 
+//1337
+//8080
+//80
+http.listen(8080,"127.0.0.1");
+
 var io = require('socket.io').listen(http);
 
 var users = [ ];
@@ -64,9 +69,3 @@ io.sockets.on('connection', function (socket) {
 		io.sockets.emit('disconnect',{msg: loggedOffUser + " has logged off, brah",users:getUsersJson()});
 	});
 });
-
-
-//1337
-//8080
-//80
-http.listen(8080,"127.0.0.1");

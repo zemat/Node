@@ -2,7 +2,7 @@ var http = require('http').createServer(function (req,resp){
 	console.log("Started");											  
 });
 
-http.listen(1337);
+http.listen(8080);
 
 var io = require('socket.io').listen(http);
 

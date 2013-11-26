@@ -8,7 +8,8 @@
 	},
     "dependencies": {
         "socket.io": "latest",
-        "express": "latest"
+        "express": "latest",
+		"twitter":"latest"
     },
     "author": "zemat"
 }

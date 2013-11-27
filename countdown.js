@@ -4,6 +4,8 @@ var http = require('http').createServer(function (req,resp){
 
 http.listen(8080);
 
+var os = require('os');
+
 var io = require('socket.io').listen(http);
 
 var util = require('util');

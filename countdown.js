@@ -28,13 +28,6 @@ var twit = new twitter({
 	access_token_secret: accessSecret
 });
 
-var twitPost = new twitter({
-	consumer_key: consumerKey,
-	consumer_secret: consumerSecret,
-	access_token_key: accessKey,
-	access_token_secret: accessSecret
-});
-
 var users = [ ];
 
 var timer;
@@ -113,12 +106,17 @@ function handleMacro(macro,fromSocketID){
 			fromUser.socket.emit("tellSent",{"to": toUser.userName,"msg":msg});
 		}
 	}
+	
 	if(args[0] == "/invite"){
 		var to = args[1].substr(1,args[1].length-1);
-		var tweet = args[1] + " " + fromUser.userName + " has invited you to join him for a chat. http://zemat.net/nodetimer/index.htm?un=" + to + " desk/laptop";
+		var tweet = args[1] + " " + fromUser.userName + " has invited you to join him for a chat. http://192.168.0.180/nodejitsu/index.htm?un=" + to + " desk/laptop";
 		twit.updateStatus(tweet, function(data) {
 				fromUser.socket.emit("inviteSent",{text: "Invite sent to " + args[1]});
 		});
+	}
+	
+	if(args[0] == "/timer"){
+		handleNewTimer('{"action":"ytv","duration":"' + args[1] + '","location":"' + args[2] + '"}');
 	}
 }
 
@@ -141,8 +139,11 @@ function getUserBySocketID(socketID){
 	return false;
 }
 
-function logz(msg){
+function logz(msg,broadcast){
 	console.log("\n\nZebug: " + msg + "\n\n");
+	if(broadcast){
+		io.sockets.emit("chatMsg",{userName: "DEBUG","msg":msg});
+	}
 }
 
 function handleTwitterLookup(hashtag){
@@ -153,6 +154,20 @@ function handleTwitterLookup(hashtag){
 			}
 		});
 	});
+	io.sockets.emit("twitterInit",{msg:hashtag});
+}
+
+function handleNewTimer(data){
+	var j = JSON.parse(data);
+	expireAfter = 300;
+	action = j.action;
+	location = j.location;
+	duration = j.duration;
+	if(timer != null){
+		timer.close();
+	}
+	timer = setInterval(SendTimerFinished,1000);
+	io.sockets.emit("newTime",{msg:duration});
 }
 
 io.sockets.on('connection', function (socket) {
@@ -161,16 +176,7 @@ io.sockets.on('connection', function (socket) {
 	}
 	socket.on('newTimer', function (data) {
 		if(typeof data === "string"){
-			var j = JSON.parse(data);
-			expireAfter = 300;
-			action = j.action;
-			location = j.location;
-			duration = j.duration;
-			if(timer != null){
-				timer.close();
-			}
-			timer = setInterval(SendTimerFinished,1000);
-			io.sockets.emit("newTime",{msg:duration});
+			handleNewTimer(data);
 		}
 	});
 	socket.on('playVideo',function (data){
@@ -184,7 +190,7 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 	
-	socket.emit('loginMsg', { msg: 'Please supply a user name to login' });
+	socket.emit('loginMsg', { msg: os.hostname() });
 	
 	socket.on('login', function (data) {
 		if(typeof data === "string"){
@@ -208,6 +214,11 @@ io.sockets.on('connection', function (socket) {
 		else{
 			handleMacro(msg,socket.id);
 		}
+	});
+	
+	socket.on('userTyping', function (data) {
+		var j = JSON.parse(data);
+		io.sockets.emit('userTyping',j);
 	});
 	
 	socket.on('hashtagLookup', function (data){

@@ -115,7 +115,7 @@ function handleMacro(macro,fromSocketID){
 	}
 	if(args[0] == "/invite"){
 		var to = args[1].substr(1,args[1].length-1);
-		var tweet = args[1] + " " + fromUser.userName + " has invited you to join him for a chat. http://192.168.0.180/nodejitsu/index.htm?un=" + to + " desk/laptop";
+		var tweet = args[1] + " " + fromUser.userName + " has invited you to join him for a chat. http://zemat.net/nodetimer/index.htm?un=" + to + " desk/laptop";
 		twit.updateStatus(tweet, function(data) {
 				fromUser.socket.emit("inviteSent",{text: "Invite sent to " + args[1]});
 		});

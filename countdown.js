@@ -9,6 +9,32 @@ var io = require('socket.io').listen(http);
 var util = require('util');
 var twitter = require('twitter');
 
+//local
+/*var consumerKey = "KF579cDwKCfOEf1X2qOHg";
+var consumerSecret = "MwUuYeLhv7qhdVj3VQHt2SS43K4EH5AQSKGnJZP8PvY";
+var accessKey = "275320700-pmxFGUGfZNqaBC1kyg7iwM7VfTt5z2CF2NOvlM2y";
+var accessSecret = "SdLMxDXqAJYplykvdbOZom877wrVzsBaSRygsrLG8LdQj";*/
+
+//AWS
+var consumerKey = "oZdi5KMcYQLa8lNWA9Ugiw";
+var consumerSecret = "GmDPchTmGvcJ5WhXSSiQLGAQWyxtIbDrP9oD9yWg0Uk";
+var accessKey = "275320700-GGeiF7OYMC8kf3Mr8qoxFPHi0aRvx2rJVYMzYSug";
+var accessSecret = "lJmeo3gTfbi4n399ZqWBFuM2Jq04VnJA3kKQCHMyD2Uug";
+
+var twit = new twitter({
+	consumer_key: consumerKey,
+	consumer_secret: consumerSecret,
+	access_token_key: accessKey,
+	access_token_secret: accessSecret
+});
+
+var twitPost = new twitter({
+	consumer_key: consumerKey,
+	consumer_secret: consumerSecret,
+	access_token_key: accessKey,
+	access_token_secret: accessSecret
+});
+
 var users = [ ];
 
 var timer;
@@ -87,6 +113,13 @@ function handleMacro(macro,fromSocketID){
 			fromUser.socket.emit("tellSent",{"to": toUser.userName,"msg":msg});
 		}
 	}
+	if(args[0] == "/invite"){
+		var to = args[1].substr(1,args[1].length-1);
+		var tweet = args[1] + " " + fromUser.userName + " has invited you to join him for a chat. http://192.168.0.180/nodejitsu/index.htm?un=" + to + " desk/laptop";
+		twit.updateStatus(tweet, function(data) {
+				fromUser.socket.emit("inviteSent",{text: "Invite sent to " + args[1]});
+		});
+	}
 }
 
 //get rid of userNotLogged();
@@ -113,12 +146,6 @@ function logz(msg){
 }
 
 function handleTwitterLookup(hashtag){
-	var twit = new twitter({
-		consumer_key: 'KF579cDwKCfOEf1X2qOHg',
-		consumer_secret: 'MwUuYeLhv7qhdVj3VQHt2SS43K4EH5AQSKGnJZP8PvY',
-		access_token_key: '275320700-vXY3jDDKBXN5QaBzkQWrjRYpSfCVI41llj6ldM5M',
-		access_token_secret: 'gHYxQSGObhGJ0PCUQmiqftHfvZAcyXVGQ1Z9lxtKVQIly'
-	});
 	twit.stream('statuses/filter', {track:'#' + hashtag}, function(stream) {
 		stream.on('data', function(data) {
 			if(!data.disconnect){
@@ -126,9 +153,6 @@ function handleTwitterLookup(hashtag){
 			}
 		});
 	});
-	/*if(twit.stream){
-		logz("THERE IS A STREAM");
-	}*/
 }
 
 io.sockets.on('connection', function (socket) {
